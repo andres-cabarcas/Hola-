@@ -1,0 +1,63 @@
+import 'dart:html';
+
+void main() {
+  var output = querySelector('#output') as DivElement;
+  var input = querySelector('#input') as InputElement;
+  var button = querySelector('#submit') as ButtonElement;
+
+  var currentQuestion = 0;
+  var nombre = '';
+
+  List<String> questions = [
+    '¿Cómo te llamas?',
+    '¿Te puedo decir algo? (si/no)',
+    '¿Me podrías mandar tu número de WhatsApp? (si/no)'
+  ];
+
+  void displayQuestion() {
+    output.text = questions[currentQuestion];
+  }
+
+  void processAnswer(String answer) {
+    switch (currentQuestion) {
+      case 0:
+        nombre = answer;
+        output.text = 'Que bonito nombre tienes, $nombre!';
+        break;
+      case 1:
+        if (answer.toLowerCase() == 'si') {
+          output.text = 'Eres hermosa como las flores en primavera.';
+        } else if (answer.toLowerCase() == 'no') {
+          output.text = 'Aaáa bueno, te iba a decir algo lindo.';
+        } else {
+          output.text = 'No entendí tu respuesta, así que seguiré con la encuesta.';
+        }
+        break;
+      case 2:
+        if (answer.toLowerCase() == 'si') {
+          output.text = 'Gracias hermosa.';
+        } else if (answer.toLowerCase() == 'no') {
+          output.text = 'Te pierdes de este bombón, hermosa.';
+        } else {
+          output.text = 'No entendí tu respuesta, pero gracias por participar en la encuesta.';
+        }
+        output.text += '\n\nGracias por participar en la encuesta, $nombre!';
+        button.disabled = true;
+        return;
+    }
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      window.setTimeout(() {
+        displayQuestion();
+      }, 2000);
+    }
+  }
+
+  displayQuestion();
+
+  button.onClick.listen((event) {
+    var answer = input.value ?? '';
+    input.value = '';
+    processAnswer(answer);
+  });
+}
